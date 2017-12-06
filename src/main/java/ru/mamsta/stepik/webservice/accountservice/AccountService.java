@@ -1,4 +1,6 @@
-package ru.mamsta.stepik.webservice.model;
+package ru.mamsta.stepik.webservice.accountservice;
+
+import ru.mamsta.stepik.webservice.dbservice.dataset.UserDataSet;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;
@@ -6,24 +8,11 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class AccountService {
 
-    private Map<UUID, User> session = Collections.synchronizedMap(new HashMap<>());
-    private Map<String, User> users = Collections.synchronizedMap(new HashMap<>());
+    private Map<UUID, UserDataSet> session = Collections.synchronizedMap(new HashMap<>());
 
     Lock lock = new ReentrantLock();
 
-    public void registerUser(User user) {
-        users.put(user.getLogin(), user);
-    }
-
-    public boolean containsUser(String login) {
-        return users.containsKey(login);
-    }
-
-    public User getUser(String login) {
-        return users.get(login);
-    }
-
-    public String autorization(User user) {
+    public String autorization(UserDataSet user) {
         try {
             lock.lock();
             UUID uuid = null;
@@ -44,13 +33,13 @@ public class AccountService {
         try {
             lock.lock();
             UUID uuid = UUID.fromString(sessionId);
-            return session.remove(sessionId) != null ? true : false;
+            return session.remove(uuid) != null ? true : false;
         } finally {
             lock.unlock();
         }
     }
 
-    public User getAutorizationUser(String sessionId) {
+    public UserDataSet getAutorizationUser(String sessionId) {
         UUID uuid;
         try {
             lock.lock();
@@ -59,5 +48,16 @@ public class AccountService {
             lock.unlock();
         }
         return session.get(uuid);
+    }
+
+    public boolean checkToken(String sessionId) {
+        UUID uuid;
+        try {
+            lock.lock();
+            uuid = UUID.fromString(sessionId);
+        } finally {
+            lock.unlock();
+        }
+        return session.containsKey(uuid);
     }
 }

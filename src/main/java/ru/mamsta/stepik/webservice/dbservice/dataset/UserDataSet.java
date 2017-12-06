@@ -1,13 +1,28 @@
-package ru.mamsta.stepik.webservice.model;
+package ru.mamsta.stepik.webservice.dbservice.dataset;
 
-public class User implements Comparable<User> {
+public class UserDataSet implements Comparable<UserDataSet> {
 
+    private  Long id;
     private String login;
     private String password;
 
-    public User(String login, String password) {
+    public UserDataSet(Long id, String login, String password) {
+        this.id = id;
         this.login = login;
         this.password = password;
+    }
+
+    public UserDataSet(String login, String password) {
+        this.login = login;
+        this.password = password;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getLogin() {
@@ -31,7 +46,7 @@ public class User implements Comparable<User> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        User user = (User) o;
+        UserDataSet user = (UserDataSet) o;
 
         return getLogin().equals(user.getLogin());
     }
@@ -43,14 +58,15 @@ public class User implements Comparable<User> {
 
     @Override
     public String toString() {
-        return "User{" +
-                "login='" + login + '\'' +
+        return "UserDataSet{" +
+                "id=" + id +
+                ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }
 
     @Override
-    public int compareTo(User o) {
+    public int compareTo(UserDataSet o) {
         return getLogin().compareTo(o.getLogin());
     }
 }
